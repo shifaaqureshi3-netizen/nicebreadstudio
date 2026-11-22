@@ -288,7 +288,7 @@ footer{background:var(--ink);color:var(--butter);padding:0 0 34px;overflow:hidde
     <div>
       <div class="directory" role="navigation" aria-label="Store directory">
         <b>STORE DIRECTORY</b>
-        <a href="#aisle"><span>Aisle 1 · Packaged goods</span><span>→</span></a>
+        <a href="#aisle"><span>Aisle 1 · Made by me</span><span>→</span></a>
         <a href="#more"><span>Price board · More work</span><span>→</span></a>
         <a href="#checkout"><span>Checkout · Order a brand</span><span>→</span></a>
       </div>
@@ -298,7 +298,7 @@ footer{background:var(--ink);color:var(--butter);padding:0 0 34px;overflow:hidde
 
 <section class="aisle paper" id="aisle" aria-labelledby="aisleH">
   <div class="wrap">
-    <div class="sec-h"><div><span class="aisle-no">Aisle 1</span><h2 id="aisleH">Packaged goods</h2></div><p>Pick anything up to read its nutrition facts and the story behind it.</p></div>
+    <div class="sec-h"><div><span class="aisle-no">Aisle 1</span><h2 id="aisleH">Made by me</h2></div><p><b>Everything on these shelves is my own work:</b> brands, packaging and identities I designed. Pick anything up to read its nutrition facts and the story behind it.</p></div>
     <p class="swipe">Swipe along the shelf →</p>
     <div id="shelves"></div>
   </div>
@@ -388,6 +388,8 @@ footer{background:var(--ink);color:var(--butter);padding:0 0 34px;overflow:hidde
 
 <script>
 const EMAIL="shifaaqureshi3@gmail.com";
+/* Web3Forms access key: paste yours between the quotes */
+const W3F_KEY="1b97ac17-e38d-41b4-aa65-857082551439";
 const PF="https://shifaqureshi.myportfolio.com/";
 const src=s=>`img/${s}.webp`;
 
@@ -578,22 +580,24 @@ function render(){
     rc.innerHTML=head()+lines(false)+`<hr><div class="rf">
       <label for="n">Name<input id="n" autocomplete="name"></label>
       <label for="e">Email<input id="e" type="email" autocomplete="email"></label>
+      <label for="ph">Contact number<input id="ph" type="tel" autocomplete="tel" inputmode="tel" placeholder="+971 50 000 0000"></label>
       <label for="b">Brand<input id="b" placeholder="your brand or business"></label>
       <label for="t">Timeline<select id="t"><option value="">choose one</option><option>As soon as possible</option><option>Within a month</option><option>1 to 3 months</option><option>Just exploring</option></select></label>
       <label for="m">Note<textarea id="m" placeholder="your idea, audience, launch date"></textarea></label>
       <div class="err" id="err" role="alert"></div></div>
       <button class="rbtn" id="print">Print receipt</button><button class="rbtn ghost" id="back">Back to cart</button>`;
     rc.querySelector('#back').onclick=()=>{stage='cart';render();};
-    rc.querySelector('#print').onclick=()=>{const v=i=>rc.querySelector('#'+i).value.trim();const name=v('n'),email=v('e');
+    rc.querySelector('#print').onclick=()=>{const v=i=>rc.querySelector('#'+i).value.trim();const name=v('n'),email=v('e'),phone=v('ph');
       if(!name||!/^\S+@\S+\.\S+$/.test(email)){rc.querySelector('#err').textContent='Add your name and a valid email so I can reply.';return;}
-      window._o={name,email,brand:v('b'),time:v('t'),note:v('m')};stage='done';render();};
+      if((phone.match(/\d/g)||[]).length<7){rc.querySelector('#err').textContent='Add your contact number so I can reach you.';return;}
+      window._o={name,email,phone,brand:v('b'),time:v('t'),note:v('m')};stage='done';render();};
   } else {
     const o=window._o;const items=[...cart.keys()].map(n=>`- ${n}`).join('\n');
-    const body=`Hi Shifa,\n\nOrder No. ${ticket}\n${items}\n${refs.size?'References: '+[...refs].join(', ')+'\n':''}\nName: ${o.name}\nEmail: ${o.email}\nBrand: ${o.brand||'-'}\nTimeline: ${o.time||'-'}\n\n${o.note}\n`;
+    const body=`Hi Shifa,\n\nOrder No. ${ticket}\n${items}\n${refs.size?'References: '+[...refs].join(', ')+'\n':''}\nName: ${o.name}\nEmail: ${o.email}\nPhone: ${o.phone}\nBrand: ${o.brand||'-'}\nTimeline: ${o.time||'-'}\n\n${o.note}\n`;
     const subj=`Order No. ${ticket}: ${o.brand||o.name}`;
     const L=[['c','<b>NICE BREAD STUDIO</b>'],['c','Freshly baked branding'],['h','Receipt'],['c',now()+' · No. '+ticket],['hr'],
       ...[...cart.keys()].map(n=>['l',n,priceOf(n)]),...(refs.size?[['l','Ref: '+[...refs].join(', '),'']]:[]),['hr'],
-      ['l','ITEMS',String(count())],['hr'],['l','Customer',o.name],['l','Brand',o.brand||'-'],['l','Timeline',o.time||'-'],['hr'],
+      ['l','ITEMS',String(count())],['hr'],['l','Customer',o.name],['l','Phone',o.phone],['l','Brand',o.brand||'-'],['l','Timeline',o.time||'-'],['hr'],
       ['c','<b>THANK YOU!</b>'],['c','Send this receipt to finish your order.'],['bars'],['c','GOOD THINGS ARE COMING']];
     window._L=L;
     const row=x=>x[0]==='hr'?'<hr class="pl">':x[0]==='bars'?'<div class="bars pl"></div>':x[0]==='h'?`<div class="c pl"><h3>${x[1]}</h3></div>`:x[0]==='c'?`<div class="c pl">${x[1].startsWith('<b>')?x[1]:esc(x[1])}</div>`:`<div class="rl pl"><span>${esc(x[1])}</span><span>${esc(x[2])}</span><span></span></div>`;
@@ -601,9 +605,21 @@ function render(){
     const out=rc.querySelector('#feedout');let i=0;const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
     const step=()=>{if(i<L.length){out.insertAdjacentHTML('beforeend',row(L[i]));tickSound();i++;setTimeout(step,reduce?0:L[i-1][0]==='hr'?60:140);return;}
       tearSound();rc.querySelector('#cur').remove();
-      out.insertAdjacentHTML('beforeend',`<a class="rbtn" href="mailto:${EMAIL}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}">Send my order</a>
+      out.insertAdjacentHTML('beforeend',`<button class="rbtn" id="send">Send my order</button><div class="err c" id="sendmsg" role="status"></div><a class="rbtn ghost" id="mailfb" hidden href="mailto:${EMAIL}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}">Send by email instead</a>
         <button class="rbtn ghost" id="dl" hidden>Download receipt</button><button class="rbtn ghost" id="cpo">Copy receipt</button><button class="rbtn ghost" id="new">New order</button>`);
       rc.querySelector('#cpo').onclick=()=>copy(subj+'\n\n'+body,'Receipt copied');
+      const sendBtn=rc.querySelector('#send'),msg=rc.querySelector('#sendmsg'),fb=rc.querySelector('#mailfb');
+      sendBtn.onclick=async()=>{
+        if(!W3F_KEY||W3F_KEY.startsWith('PASTE_')){fb.hidden=false;msg.textContent='Online sending isn’t set up yet. Use the email button below.';return;}
+        sendBtn.disabled=true;sendBtn.textContent='Sending…';msg.textContent='';
+        try{
+          const r=await fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
+            body:JSON.stringify({access_key:W3F_KEY,subject:subj,from_name:'Nice Bread Studio website',name:o.name,email:o.email,phone:o.phone,replyto:o.email,brand:o.brand||'-',timeline:o.time||'-',services:[...cart.keys()].join(', '),references:[...refs].join(', ')||'-',message:body,botcheck:''})});
+          const j=await r.json().catch(()=>({}));
+          if(r.ok&&j.success!==false){beepSound();sendBtn.textContent='Order sent ✓';msg.textContent='Thank you! I’ll get back to you soon.';toast('Order sent');}
+          else throw new Error(j.message||'failed');
+        }catch(e){sendBtn.disabled=false;sendBtn.textContent='Try again';msg.textContent='That didn’t go through. Try again, or send it by email.';fb.hidden=false;}
+      };
       rc.querySelector('#new').onclick=()=>{cart.clear();refs.clear();stage='cart';render();};
       if(!(window.claude&&claude.use)){const btn=rc.querySelector('#dl');btn.hidden=false;btn.onclick=async()=>{const blob=await receiptPNG(L);const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`nice-bread-receipt-${ticket}.png`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);};}
       if(window.claude&&claude.use)claude.use('downloads').then(d=>{if(!d)return;const btn=rc.querySelector('#dl');if(!btn)return;btn.hidden=false;
