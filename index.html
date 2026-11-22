@@ -286,7 +286,6 @@ footer{background:var(--ink);color:var(--butter);padding:0 0 34px;overflow:hidde
       <h1>Branding<br>Studio</h1>
     </div>
     <div>
-      <p>Branding, packaging and social media by Shifa Qureshi. Fresh stock on every shelf.</p>
       <div class="directory" role="navigation" aria-label="Store directory">
         <b>STORE DIRECTORY</b>
         <a href="#aisle"><span>Aisle 1 · Packaged goods</span><span>→</span></a>
@@ -346,9 +345,9 @@ footer{background:var(--ink);color:var(--butter);padding:0 0 34px;overflow:hidde
       <div class="scan" id="scan"></div>
       <div class="scanner" id="scanner"><i aria-hidden="true"></i><span id="scanmsg">Scanner ready</span><button type="button" class="snd" id="snd" aria-pressed="true" style="position:static;margin-left:auto">Sound on</button></div>
       <div class="contacts">
-        <div><b>Email</b><span id="em"></span><button type="button" id="cpe">Copy</button></div>
         <div><b>Instagram</b><a href="https://www.instagram.com/nicebreadstudio/" target="_blank" rel="noopener">@nicebreadstudio</a></div>
         <div><b>Behance</b><a href="https://www.behance.net/nicebreadstudio" target="_blank" rel="noopener">@nicebreadstudio</a></div>
+        <div><b>TikTok</b><a href="https://www.tiktok.com/@nicebreadstudio" target="_blank" rel="noopener">@nicebreadstudio</a></div>
       </div>
     </div>
     <div class="printer">
@@ -373,7 +372,7 @@ footer{background:var(--ink);color:var(--butter);padding:0 0 34px;overflow:hidde
         <a class="ftag" href="https://www.instagram.com/nicebreadstudio/" target="_blank" rel="noopener">Instagram</a>
         <a class="ftag" href="https://www.behance.net/nicebreadstudio" target="_blank" rel="noopener">Behance</a>
         <a class="ftag" href="https://shifaqureshi.myportfolio.com/work" target="_blank" rel="noopener">Portfolio</a>
-        <button class="ftag" type="button" id="ftmail">Copy email</button>
+        <a class="ftag" href="https://www.tiktok.com/@nicebreadstudio" target="_blank" rel="noopener">TikTok</a>
       </div>
       <button class="cartbtn" id="totop" aria-label="Back to top">
         <svg viewBox="0 0 110 90" aria-hidden="true" fill="none" stroke="#FFFFA6" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
@@ -527,8 +526,8 @@ function openPublic(){
    <div class="copy"><div class="k">Campaign · Dubai</div><h3 id="ptitle">PUBLIC</h3>${nfHTML({serving:"1 pizza",per:"12-second sear",rows:[["Topping","A5 Japanese Wagyu"],["Base","Hand-stretched dough"],["Style","High-contrast sticker slap"],["Made","Campaign, posters, stickers, box"]],ing:"Red kanji lanterns, neon, a mascot in a local ghutra, Shinjuku meets the UAE."})}
    <h4>The story</h4><p>A Flavour of the Season campaign for PUBLIC in Dubai. In a city where luxury is often loud, this one whispers like a Tokyo back-alley: A5 Wagyu on hand-stretched dough, torched for exactly 12 seconds, wrapped in sticker-slap branding.</p>
    <div class="pfoot"><button class="btn ghost" data-add="Campaign">Order a campaign</button></div></div></div>`);wireOrder();}
-function wireOrder(){panel.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{close();const map={'Social media':'Social media','Campaign':'Campaign'};
-  addItem(map[b.dataset.add]||'Brand identity',b.dataset.add in map?null:b.dataset.add);document.getElementById('checkout').scrollIntoView();});}
+function wireOrder(){panel.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{close();const map={'Social media':'Social Media Branding','Campaign':'Marketing Campaign'};
+  addItem(map[b.dataset.add]||'Brand Identity',b.dataset.add in map?null:b.dataset.add);document.getElementById('checkout').scrollIntoView();});}
 document.addEventListener('click',e=>{
   const g=e.target.closest('[data-good]');if(g&&!panel.contains(g)){const btn=g.classList.contains('good')?g:document.querySelector(`.good[data-good="${g.dataset.good}"]`);audio();beepSound();btn.classList.add('scanning');setTimeout(()=>{btn.classList.remove('scanning');openGood(g.dataset.good)},480);return;}
   const f=e.target.closest('[data-feed]');if(f){const ff=FEEDS.find(x=>x.id===f.dataset.feed);if(ff.link){window.open(ff.link,'_blank','noopener');return;}return openFeed(ff.id);}
@@ -546,10 +545,13 @@ document.querySelectorAll('.love').forEach(b=>b.addEventListener('click',()=>{
 }));
 
 /* ---------- checkout receipt ---------- */
-const SERV=[["Brand identity","Logo, type, colours, guidelines"],["Logo design","A mark that sticks"],["Packaging","Cups, cans, bottles, tins"],["Social media","Feed design and content"],["Illustration","Mascots, patterns, label art"],["Campaign","Posters, stickers, launch kit"],["Menu design","Menus that match the brand"]];
+const SERV=[["Brand Identity","Logo, colours, type, guidelines",0],["Social Media Branding","Feed look, templates, content",0],["Creative Direction","Moodboards, shoots, visual direction",0],["Packaging","Cups, cans, bottles, tins",0],["Print Media","Menus, flyers, posters, cards",0],["Illustration","Mascots, patterns, label art",0],["Digital Designs","Web graphics, ads, banners",0],["Marketing Campaign","Launch posters, stickers, assets",0],["AI Image Creation","Product and scene visuals",0]];
+const PRICE=Object.fromEntries(SERV.map(x=>[x[0],x[2]]));
+const aed=n=>'AED '+n.toLocaleString('en-US');
+const priceOf=n=>'';
 const cart=new Map();let refs=new Set();let stage='cart';const ticket=String(Math.floor(Math.random()*900)+100);
 const rc=document.getElementById('rcpt');
-document.getElementById('scan').innerHTML=SERV.map(s=>`<button class="svc" data-svc="${s[0]}" aria-pressed="false"><span>${s[0]}<small>${s[1]}</small></span><span class="plus" aria-hidden="true">+</span></button>`).join('');
+document.getElementById('scan').innerHTML=SERV.map(s=>`<button class="svc" data-svc="${s[0]}" aria-pressed="false"><span>${s[0]}<small>${s[2]?aed(s[2])+' · ':''}${s[1]}</small></span><span class="plus" aria-hidden="true">+</span></button>`).join('');
 document.getElementById('scan').addEventListener('click',e=>{const b=e.target.closest('[data-svc]');if(!b)return;audio();
   if(stage!=='cart'){stage='cart';}
   if(cart.has(b.dataset.svc)){cart.delete(b.dataset.svc);beep('Removed '+b.dataset.svc)}else addItem(b.dataset.svc);
@@ -559,15 +561,17 @@ function beep(msg){beepSound();const s=document.getElementById('scanner');s.clas
 const now=()=>{const d=new Date();return d.toLocaleDateString(undefined,{day:'2-digit',month:'2-digit',year:'2-digit'})+'  '+d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})};
 const head=()=>`<div class="c"><b>NICE BREAD STUDIO</b><br>Freshly baked branding<h3>Receipt</h3>${now()} · No. ${ticket}</div><hr>`;
 function lines(edit){if(!cart.size)return `<div class="empty">Nothing scanned yet.<br>Tap a service to start.</div>`;
-  return [...cart].map(([n,q])=>`<div class="rl"><span>${n}</span>${edit?`<span class="qty"><button data-q="-" data-n="${n}" aria-label="Fewer ${n}">−</button>${q}<button data-q="+" data-n="${n}" aria-label="More ${n}">+</button></span><button class="rm" data-rm="${n}" aria-label="Remove ${n}">×</button>`:`<span>x${q}</span><span></span>`}</div>`).join('')+
+  return [...cart.keys()].map(n=>`<div class="rl"><span>${n}</span><span>${priceOf(n)}</span>${edit?`<button class="rm" data-rm="${n}" aria-label="Remove ${n}">×</button>`:'<span></span>'}</div>`).join('')+
   (refs.size?`<div class="rl"><span>Ref: ${[...refs].join(', ')}</span><span></span><span></span></div>`:'');}
-const count=()=>[...cart.values()].reduce((a,b)=>a+b,0);
+const count=()=>cart.size;
+const sub=()=>[...cart.keys()].reduce((a,n)=>a+(PRICE[n]||0),0);
+const quoted=()=>[...cart.keys()].some(n=>!PRICE[n]);
+const totalTxt=()=>{const t=sub();return t?(aed(t)+(quoted()?' + quote':'')):(cart.size?'on quote':aed(0));};
 function render(){
   document.querySelectorAll('.svc').forEach(b=>{const on=cart.has(b.dataset.svc);b.classList.toggle('in',on);b.setAttribute('aria-pressed',on)});
   if(stage==='cart'){
-    rc.innerHTML=head()+lines(true)+`<hr><div class="sum"><span>ITEMS</span><span>${count()}</span></div><div class="sum" style="font-weight:400;font-size:13px;margin-top:4px"><span>TOTAL</span><span>priced on quote</span></div>
+    rc.innerHTML=head()+lines(true)+`<hr><div class="sum"><span>ITEMS</span><span>${count()}</span></div>
       <button class="rbtn" id="pay" ${cart.size?'':'disabled'}>Pay with your details</button><div class="bars"></div><div class="c" style="font-size:11px;letter-spacing:.25em">GOOD THINGS ARE COMING</div>`;
-    rc.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{const n=b.dataset.n,q=cart.get(n)+(b.dataset.q==='+'?1:-1);if(q<=0)cart.delete(n);else cart.set(n,Math.min(q,9));render();});
     rc.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{cart.delete(b.dataset.rm);render();});
     const pay=rc.querySelector('#pay');if(pay)pay.onclick=()=>{stage='details';render();rc.querySelector('#n').focus();};
   } else if(stage==='details'){
@@ -584,12 +588,12 @@ function render(){
       if(!name||!/^\S+@\S+\.\S+$/.test(email)){rc.querySelector('#err').textContent='Add your name and a valid email so I can reply.';return;}
       window._o={name,email,brand:v('b'),time:v('t'),note:v('m')};stage='done';render();};
   } else {
-    const o=window._o;const items=[...cart].map(([n,q])=>`- ${n} x${q}`).join('\n');
+    const o=window._o;const items=[...cart.keys()].map(n=>`- ${n}`).join('\n');
     const body=`Hi Shifa,\n\nOrder No. ${ticket}\n${items}\n${refs.size?'References: '+[...refs].join(', ')+'\n':''}\nName: ${o.name}\nEmail: ${o.email}\nBrand: ${o.brand||'-'}\nTimeline: ${o.time||'-'}\n\n${o.note}\n`;
     const subj=`Order No. ${ticket}: ${o.brand||o.name}`;
     const L=[['c','<b>NICE BREAD STUDIO</b>'],['c','Freshly baked branding'],['h','Receipt'],['c',now()+' · No. '+ticket],['hr'],
-      ...[...cart].map(([n,q])=>['l',n,'x'+q]),...(refs.size?[['l','Ref: '+[...refs].join(', '),'']]:[]),['hr'],
-      ['l','ITEMS',String(count())],['l','TOTAL','priced on quote'],['hr'],['l','Customer',o.name],['l','Brand',o.brand||'-'],['l','Timeline',o.time||'-'],['hr'],
+      ...[...cart.keys()].map(n=>['l',n,priceOf(n)]),...(refs.size?[['l','Ref: '+[...refs].join(', '),'']]:[]),['hr'],
+      ['l','ITEMS',String(count())],['hr'],['l','Customer',o.name],['l','Brand',o.brand||'-'],['l','Timeline',o.time||'-'],['hr'],
       ['c','<b>THANK YOU!</b>'],['c','Send this receipt to finish your order.'],['bars'],['c','GOOD THINGS ARE COMING']];
     window._L=L;
     const row=x=>x[0]==='hr'?'<hr class="pl">':x[0]==='bars'?'<div class="bars pl"></div>':x[0]==='h'?`<div class="c pl"><h3>${x[1]}</h3></div>`:x[0]==='c'?`<div class="c pl">${x[1].startsWith('<b>')?x[1]:esc(x[1])}</div>`:`<div class="rl pl"><span>${esc(x[1])}</span><span>${esc(x[2])}</span><span></span></div>`;
@@ -597,7 +601,7 @@ function render(){
     const out=rc.querySelector('#feedout');let i=0;const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
     const step=()=>{if(i<L.length){out.insertAdjacentHTML('beforeend',row(L[i]));tickSound();i++;setTimeout(step,reduce?0:L[i-1][0]==='hr'?60:140);return;}
       tearSound();rc.querySelector('#cur').remove();
-      out.insertAdjacentHTML('beforeend',`<a class="rbtn" href="mailto:${EMAIL}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}">Send to ${EMAIL}</a>
+      out.insertAdjacentHTML('beforeend',`<a class="rbtn" href="mailto:${EMAIL}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}">Send my order</a>
         <button class="rbtn ghost" id="dl" hidden>Download receipt</button><button class="rbtn ghost" id="cpo">Copy receipt</button><button class="rbtn ghost" id="new">New order</button>`);
       rc.querySelector('#cpo').onclick=()=>copy(subj+'\n\n'+body,'Receipt copied');
       rc.querySelector('#new').onclick=()=>{cart.clear();refs.clear();stage='cart';render();};
@@ -626,9 +630,8 @@ function receiptPNG(L){return new Promise(res=>{
     y+=lh;});
   c.toBlob(b=>res(b),'image/png');});}
 render();
-document.getElementById('em').textContent=EMAIL;
 const sndBtn=document.getElementById('snd');sndBtn.onclick=()=>{soundOn=!soundOn;sndBtn.textContent=soundOn?'Sound on':'Sound off';sndBtn.setAttribute('aria-pressed',soundOn);if(soundOn){audio();beepSound();}};
-document.getElementById('cpe').onclick=()=>copy(EMAIL,'Email copied');
+
 
 
 /* ---------- footer ---------- */
@@ -637,7 +640,6 @@ document.getElementById('cpe').onclick=()=>copy(EMAIL,'Email copied');
   const one=GOODS.map(g=>`<button data-good="${g.id}" aria-label="${g.name}"><img src="img/m-${g.id}.webp" alt="" style="height:${Math.round(g.h*.46)}px"></button>`).join('');
   run.innerHTML=one+one.replace(/<button /g,'<button tabindex="-1" aria-hidden="true" ');
   const sign=document.getElementById('sign');sign.onclick=()=>{sign.classList.toggle('flip');tickSound();};
-  document.getElementById('ftmail').onclick=()=>copy(EMAIL,'Email copied: '+EMAIL);
   const top=document.getElementById('totop');top.onclick=()=>{audio();beepSound();top.classList.add('go');
     setTimeout(()=>{scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});},350);setTimeout(()=>top.classList.remove('go'),1000);};
   let n=0;try{n=+(localStorage.getItem('nbm-visits')||0)+1;localStorage.setItem('nbm-visits',n)}catch(e){}
