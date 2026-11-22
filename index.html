@@ -89,8 +89,30 @@ h1{font-size:clamp(60px,11vw,158px);line-height:.84;letter-spacing:-.055em;font-
 .tag .m{display:flex;justify-content:space-between;align-items:center;font-size:10.5px;margin-top:4px;line-height:1.2}
 .tag .m i{width:56px;height:16px;background:repeating-linear-gradient(90deg,var(--ink) 0 1px,transparent 1px 2px,var(--ink) 2px 4px,transparent 4px 5px,var(--ink) 5px 6px,transparent 6px 8px)}
 .tag:hover{background:#fff8}
-.swipe{display:none;font-weight:700;font-size:13px;margin-top:-40px;margin-bottom:40px}
-@media (max-width:900px){.swipe{display:block}}
+/* mobile aisle: drift, arrows, hint, progress */
+.shelf{position:relative}
+.sarrow,.more-pill,.sbar,.shelf .fade{display:none}
+@media (max-width:939px){
+  .scroller{scroll-snap-type:none;padding-top:44px!important}
+  .track{min-width:720px}
+  .good img{height:calc(var(--h) * .74)}
+  .tag{width:150px}
+  .shelf{margin-bottom:46px}
+  .shelf .fade{display:block;position:absolute;top:0;bottom:30px;width:54px;pointer-events:none;z-index:6;transition:opacity .3s}
+  .shelf .fade.r{right:-28px;background:linear-gradient(to left,var(--teal) 15%,rgba(166,208,203,0))}
+  .shelf .fade.l{left:-28px;background:linear-gradient(to right,var(--teal) 15%,rgba(166,208,203,0));opacity:0}
+  .shelf.not-start .fade.l{opacity:1}.shelf.at-end .fade.r{opacity:0}
+  .sarrow{display:grid;place-items:center;position:absolute;top:42%;z-index:7;width:44px;height:44px;border-radius:50%;border:2px solid var(--ink);background:var(--butter);color:var(--ink);font-size:20px;font-weight:700;cursor:pointer;box-shadow:0 4px 0 rgba(49,41,30,.25);transition:opacity .25s,transform .2s}
+  .sarrow:active{transform:scale(.92)}
+  .sarrow.prev{left:-10px}.sarrow.next{right:-10px}
+  .shelf:not(.not-start) .sarrow.prev,.shelf.at-end .sarrow.next{opacity:0;pointer-events:none}
+  .more-pill{display:flex;align-items:center;gap:8px;position:absolute;right:0;top:0;z-index:8;background:var(--ink);color:var(--butter);font-size:12px;font-weight:700;padding:7px 12px;border-radius:30px;transition:opacity .4s,transform .4s}
+  .more-pill i{font-style:normal;display:inline-block;animation:nudge 1.2s ease-in-out infinite}
+  .shelf.seen .more-pill{opacity:0;transform:translateY(-6px);pointer-events:none}
+  .sbar{display:block;position:relative;height:5px;border-radius:5px;background:rgba(49,41,30,.15);margin:14px auto 0;width:64%}
+  .sbar b{position:absolute;top:0;bottom:0;left:0;border-radius:5px;background:var(--ink);transition:left .1s}
+}
+@keyframes nudge{0%,100%{transform:translateX(-3px)}50%{transform:translateX(4px)}}
 
 /* produce */
 .produce{padding:90px 0 80px;border-bottom:2px solid var(--ink)}
@@ -154,7 +176,7 @@ h1{font-size:clamp(60px,11vw,158px);line-height:.84;letter-spacing:-.055em;font-
 .scanner i{width:12px;height:12px;border-radius:50%;background:var(--ink);opacity:.25;transition:opacity .1s}
 .scanner.beep i{opacity:1;background:var(--butter);box-shadow:0 0 0 3px var(--ink)}
 @media (max-width:900px){.till{grid-template-columns:1fr}}
-@media (max-width:480px){.scan{grid-template-columns:1fr}}
+@media (max-width:480px){.scan{gap:8px}.svc{padding:11px 10px;font-size:14px;gap:6px;border-radius:12px}.svc small{font-size:11px;line-height:1.3}.svc .plus{width:28px;height:28px;font-size:17px}}
 
 .printer{position:sticky;top:84px}
 .slot{height:22px;background:var(--ink);border-radius:12px;position:relative;z-index:2;box-shadow:0 6px 0 rgba(49,41,30,.25)}
@@ -236,7 +258,7 @@ footer{background:var(--ink);color:var(--butter);padding:0 0 34px;overflow:hidde
 @keyframes fade{from{opacity:0}}
 .panel{position:relative;background:var(--butter);border:2px solid var(--ink);border-radius:22px;max-width:1080px;width:100%;max-height:calc(100% - 10px);overflow:auto;overflow-x:hidden;animation:rise .3s cubic-bezier(.2,1.3,.4,1)}
 @keyframes rise{from{transform:translateY(30px)}}
-.x{position:sticky;top:14px;float:right;margin:14px 14px -50px 0;z-index:3;width:40px;height:40px;border-radius:50%;border:0;background:var(--ink);color:var(--butter);font-size:22px;cursor:pointer}
+.x{position:sticky;top:14px;display:block;margin:14px 14px -54px auto;z-index:3;width:40px;height:40px;border-radius:50%;border:0;background:var(--ink);color:var(--butter);font-size:22px;cursor:pointer}
 .pp{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr)}
 .stage{background:var(--teal);border-right:2px solid var(--ink);padding:34px 24px 24px;display:flex;flex-direction:column;gap:18px}
 .hero-shot{display:grid;place-items:center;min-height:360px}
@@ -253,7 +275,7 @@ footer{background:var(--ink);color:var(--butter);padding:0 0 34px;overflow:hidde
 .copy h4{font-size:13px;letter-spacing:.14em;text-transform:uppercase;margin:22px 0 6px}
 .copy p{font-size:16px;line-height:1.6;margin:0}
 .nf{border:3px solid var(--ink);padding:8px 12px 10px;background:#fffff0;max-width:440px}
-.nf .tt{font-size:34px;font-weight:900;letter-spacing:-.03em;line-height:1;border-bottom:2px solid var(--ink);padding-bottom:4px}
+.nf .tt{font-size:clamp(26px,7vw,34px);font-weight:900;letter-spacing:-.03em;line-height:1;border-bottom:2px solid var(--ink);padding-bottom:4px}
 .nf .sv{display:flex;justify-content:space-between;font-size:14px;padding:5px 0;border-bottom:10px solid var(--ink)}
 .nf .sv b{font-size:16px}
 .nf .ap{font-size:12px;font-weight:700;padding:4px 0;border-bottom:4px solid var(--ink);display:flex;justify-content:space-between}
@@ -299,7 +321,6 @@ footer{background:var(--ink);color:var(--butter);padding:0 0 34px;overflow:hidde
 <section class="aisle paper" id="aisle" aria-labelledby="aisleH">
   <div class="wrap">
     <div class="sec-h"><div><span class="aisle-no">Aisle 1</span><h2 id="aisleH">Made by me</h2></div><p><b>Everything on these shelves is my own work:</b> brands, packaging and identities I designed. Pick anything up to read its nutrition facts and the story behind it.</p></div>
-    <p class="swipe">Swipe along the shelf →</p>
     <div id="shelves"></div>
   </div>
 </section>
@@ -455,12 +476,39 @@ function tearSound(){const a=audio();if(!a||a.state!=='running')return;const len
   for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.sin(Math.PI*i/len)*.4;const s=a.createBufferSource(),f=a.createBiquadFilter();f.type='highpass';f.frequency.value=1800;s.buffer=b;s.connect(f).connect(a.destination);s.start()}
 const shelves=document.getElementById('shelves');
 [GOODS.slice(0,4),GOODS.slice(4)].forEach(row=>{
-  shelves.insertAdjacentHTML('beforeend',`<div class="shelf"><div class="scroller"><div class="track">
+  shelves.insertAdjacentHTML('beforeend',`<div class="shelf"><span class="more-pill" aria-hidden="true">${row.length} products · swipe <i>→</i></span><span class="fade l" aria-hidden="true"></span><span class="fade r" aria-hidden="true"></span><button class="sarrow prev" aria-label="Previous products">←</button><button class="sarrow next" aria-label="More products">→</button><div class="scroller"><div class="track">
    <div class="goods">${row.map(g=>`<button class="good" data-good="${g.id}" aria-label="${g.name}. Open nutrition facts"><span class="frame" aria-hidden="true"></span><span class="peek">BEEP<small>${g.name}</small></span><img src="img/m-${g.id}.webp" style="--h:${g.h}px" alt="${g.name} packaging"><span class="laser" aria-hidden="true"></span></button>`).join('')}</div>
    <div class="plank"></div>
    <div class="edge">${row.map(g=>`<button class="tag" data-good="${g.id}" tabindex="-1" aria-hidden="true"><span class="t"><b>${g.name}</b><i></i></span></button>`).join('')}</div>
-  </div></div></div>`);
+  </div></div><div class="sbar" aria-hidden="true"><b></b></div></div>`);
 });
+/* mobile shelf behaviour */
+(function(){
+  const mq=matchMedia('(max-width: 939px)'),reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('#shelves .shelf').forEach(sh=>{
+    const sc=sh.querySelector('.scroller'),bar=sh.querySelector('.sbar b');
+    let pos=0,dir=1,pausedUntil=0,visible=false,hold=0;
+    const max=()=>sc.scrollWidth-sc.clientWidth;
+    const update=()=>{const m=max();sh.classList.toggle('not-start',sc.scrollLeft>4);sh.classList.toggle('at-end',sc.scrollLeft>=m-4);
+      const f=sc.clientWidth/sc.scrollWidth;bar.style.width=(f*100)+'%';bar.style.left=(m>0?sc.scrollLeft/m*(1-f)*100:0)+'%';};
+    const touched=()=>{sh.classList.add('seen');pausedUntil=performance.now()+5000;};
+    ['pointerdown','touchstart','wheel','keydown','focusin'].forEach(ev=>sc.addEventListener(ev,touched,{passive:true}));
+    sc.addEventListener('scroll',update,{passive:true});
+    sh.querySelector('.sarrow.prev').onclick=()=>{touched();sc.scrollBy({left:-200,behavior:'smooth'});};
+    sh.querySelector('.sarrow.next').onclick=()=>{touched();sc.scrollBy({left:200,behavior:'smooth'});};
+    new IntersectionObserver(es=>{visible=es[0].isIntersecting;},{threshold:.4}).observe(sh);
+    addEventListener('resize',update);update();
+    if(reduce)return;
+    const tick=t=>{
+      if(mq.matches&&visible&&t>pausedUntil&&t>hold&&max()>0){
+        if(Math.abs(pos-sc.scrollLeft)>2)pos=sc.scrollLeft;
+        pos+=dir*0.35;
+        if(pos>=max()){pos=max();dir=-1;hold=t+1800;}else if(pos<=0){pos=0;dir=1;hold=t+1800;}
+        sc.scrollLeft=pos;}
+      requestAnimationFrame(tick);};
+    requestAnimationFrame(tick);
+  });
+})();
 
 /* ---------- produce (instagram feeds) ---------- */
 const FEEDS=[
@@ -585,7 +633,7 @@ function render(){
       <label for="t">Timeline<select id="t"><option value="">choose one</option><option>As soon as possible</option><option>Within a month</option><option>1 to 3 months</option><option>Just exploring</option></select></label>
       <label for="m">Note<textarea id="m" placeholder="your idea, audience, launch date"></textarea></label>
       <div class="err" id="err" role="alert"></div></div>
-      <button class="rbtn" id="print">Print receipt</button><button class="rbtn ghost" id="back">Back to cart</button>`;
+      <button class="rbtn" id="print">Pay &amp; send my order</button><button class="rbtn ghost" id="back">Back to cart</button>`;
     rc.querySelector('#back').onclick=()=>{stage='cart';render();};
     rc.querySelector('#print').onclick=()=>{const v=i=>rc.querySelector('#'+i).value.trim();const name=v('n'),email=v('e'),phone=v('ph');
       if(!name||!/^\S+@\S+\.\S+$/.test(email)){rc.querySelector('#err').textContent='Add your name and a valid email so I can reply.';return;}
@@ -598,28 +646,27 @@ function render(){
     const L=[['c','<b>NICE BREAD STUDIO</b>'],['c','Freshly baked branding'],['h','Receipt'],['c',now()+' · No. '+ticket],['hr'],
       ...[...cart.keys()].map(n=>['l',n,priceOf(n)]),...(refs.size?[['l','Ref: '+[...refs].join(', '),'']]:[]),['hr'],
       ['l','ITEMS',String(count())],['hr'],['l','Customer',o.name],['l','Phone',o.phone],['l','Brand',o.brand||'-'],['l','Timeline',o.time||'-'],['hr'],
-      ['c','<b>THANK YOU!</b>'],['c','Send this receipt to finish your order.'],['bars'],['c','GOOD THINGS ARE COMING']];
+      ['c','<b>THANK YOU!</b>'],['c','Here’s your copy of the order.'],['bars'],['c','GOOD THINGS ARE COMING']];
     window._L=L;
+    const sendOrder=async()=>{
+      if(!W3F_KEY||W3F_KEY.startsWith('PASTE_'))return false;
+      try{const r=await fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body:JSON.stringify({access_key:W3F_KEY,subject:subj,from_name:'Nice Bread Studio website',name:o.name,email:o.email,phone:o.phone,replyto:o.email,brand:o.brand||'-',timeline:o.time||'-',services:[...cart.keys()].join(', '),references:[...refs].join(', ')||'-',message:body,botcheck:''})});
+        const j=await r.json().catch(()=>({}));return r.ok&&j.success!==false;}catch(e){return false;}};
+    let sending=sendOrder();
     const row=x=>x[0]==='hr'?'<hr class="pl">':x[0]==='bars'?'<div class="bars pl"></div>':x[0]==='h'?`<div class="c pl"><h3>${x[1]}</h3></div>`:x[0]==='c'?`<div class="c pl">${x[1].startsWith('<b>')?x[1]:esc(x[1])}</div>`:`<div class="rl pl"><span>${esc(x[1])}</span><span>${esc(x[2])}</span><span></span></div>`;
     rc.innerHTML='<div id="feedout"></div><span class="cursor" id="cur"></span>';rc.classList.remove('feeding');void rc.offsetWidth;rc.classList.add('feeding');
     const out=rc.querySelector('#feedout');let i=0;const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
     const step=()=>{if(i<L.length){out.insertAdjacentHTML('beforeend',row(L[i]));tickSound();i++;setTimeout(step,reduce?0:L[i-1][0]==='hr'?60:140);return;}
       tearSound();rc.querySelector('#cur').remove();
-      out.insertAdjacentHTML('beforeend',`<button class="rbtn" id="send">Send my order</button><div class="err c" id="sendmsg" role="status"></div><a class="rbtn ghost" id="mailfb" hidden href="mailto:${EMAIL}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}">Send by email instead</a>
+      out.insertAdjacentHTML('beforeend',`<div class="sum c" id="sendmsg" role="status" style="justify-content:center;margin-top:10px">Sending your order…</div><button class="rbtn" id="retry" hidden>Try again</button><a class="rbtn ghost" id="mailfb" hidden href="mailto:${EMAIL}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}">Send by email instead</a>
         <button class="rbtn ghost" id="dl" hidden>Download receipt</button><button class="rbtn ghost" id="cpo">Copy receipt</button><button class="rbtn ghost" id="new">New order</button>`);
       rc.querySelector('#cpo').onclick=()=>copy(subj+'\n\n'+body,'Receipt copied');
-      const sendBtn=rc.querySelector('#send'),msg=rc.querySelector('#sendmsg'),fb=rc.querySelector('#mailfb');
-      sendBtn.onclick=async()=>{
-        if(!W3F_KEY||W3F_KEY.startsWith('PASTE_')){fb.hidden=false;msg.textContent='Online sending isn’t set up yet. Use the email button below.';return;}
-        sendBtn.disabled=true;sendBtn.textContent='Sending…';msg.textContent='';
-        try{
-          const r=await fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
-            body:JSON.stringify({access_key:W3F_KEY,subject:subj,from_name:'Nice Bread Studio website',name:o.name,email:o.email,phone:o.phone,replyto:o.email,brand:o.brand||'-',timeline:o.time||'-',services:[...cart.keys()].join(', '),references:[...refs].join(', ')||'-',message:body,botcheck:''})});
-          const j=await r.json().catch(()=>({}));
-          if(r.ok&&j.success!==false){beepSound();sendBtn.textContent='Order sent ✓';msg.textContent='Thank you! I’ll get back to you soon.';toast('Order sent');}
-          else throw new Error(j.message||'failed');
-        }catch(e){sendBtn.disabled=false;sendBtn.textContent='Try again';msg.textContent='That didn’t go through. Try again, or send it by email.';fb.hidden=false;}
-      };
+      const msg=rc.querySelector('#sendmsg'),fb=rc.querySelector('#mailfb'),retry=rc.querySelector('#retry');
+      const settle=ok=>{if(ok){beepSound();msg.textContent='Order sent ✓ I’ll get back to you soon.';retry.hidden=true;fb.hidden=true;toast('Order sent');}
+        else{msg.textContent='Your order didn’t send. Try again, or send it by email.';retry.hidden=false;fb.hidden=false;}};
+      sending.then(settle);
+      retry.onclick=()=>{msg.textContent='Sending your order…';retry.hidden=true;sending=sendOrder();sending.then(settle);};
       rc.querySelector('#new').onclick=()=>{cart.clear();refs.clear();stage='cart';render();};
       if(!(window.claude&&claude.use)){const btn=rc.querySelector('#dl');btn.hidden=false;btn.onclick=async()=>{const blob=await receiptPNG(L);const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`nice-bread-receipt-${ticket}.png`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);};}
       if(window.claude&&claude.use)claude.use('downloads').then(d=>{if(!d)return;const btn=rc.querySelector('#dl');if(!btn)return;btn.hidden=false;
